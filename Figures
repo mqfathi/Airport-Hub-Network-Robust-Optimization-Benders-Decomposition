@@ -1,0 +1,40 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Sample data from the table provided
+data = {
+    "Scenario": ["S5", "S1", "S1", "S1", "S1", "S1", "S1", "S2", "S2", "S2", "S2", "S2", "S2", "S3", "S3", "S3", "S3", "S3", "S3", "S4",
+                 "S4", "S5", "S4", "S4", "S4", "S5", "S5", "S4", "S5", "S5"],
+    "Gamma_Alpha": [(1, 0.5), (1, 0.8), (2, 0.5), (2, 0.8), (3, 0.5), (3, 0.8), (1, 0.5), (1, 0.8), (2, 0.5), (2, 0.8),
+                    (3, 0.5), (3, 0.8), (1, 0.5), (1, 0.8), (2, 0.5), (2, 0.8), (3, 0.5), (3, 0.8), (1, 0.5), (1, 0.8),
+                    (2, 0.5), (2, 0.8), (3, 0.5), (3, 0.8), (1, 0.5), (1, 0.8), (2, 0.5), (2, 0.8), (3, 0.5), (3, 0.8)],
+    "Capacity_Units": [28455490, 23294690, 40929350, 25800750, 46930860, 31785000, 34038560, 22476870, 38554440, 24590990,
+                       46934500, 29966470, 33483530, 22604440, 36351370, 24718560, 44642370, 28138580, 28806660, 19275740,
+                       35565160, 21549680, 44583350, 27760210, 28806660, 17556920, 35562740, 22453640, 44568650, 27732740],
+    "Objective_Value": [2.043e+11, 2.417e+11, 2.058e+11, 2.420e+11, 2.088e+11, 2.449e+11, 2.036e+11, 2.407e+11, 2.058e+11, 2.419e+11,
+                        2.080e+11, 2.436e+11, 2.024e+11, 2.407e+11, 2.046e+11, 2.419e+11, 2.071e+11, 2.433e+11, 2.021e+11, 2.420e+11,
+                        2.040e+11, 2.439e+11, 2.066e+11, 2.454e+11, 2.018e+11, 2.415e+11, 2.041e+11, 2.424e+11, 2.063e+11, 2.441e+11]
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Plotting
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Marker styles for better black and white visibility
+markers = ['o', 's', '^', 'p', 'D', 'H']
+
+# Scatter plot for different gamma and alpha scenarios with labels for scenarios
+for index, ((gamma, alpha), group) in enumerate(df.groupby("Gamma_Alpha")):
+    marker = markers[index % len(markers)]  # Cycle through markers
+    ax.scatter(group["Capacity_Units"], group["Objective_Value"], label=f'Gamma {gamma}, Alpha {alpha}', s=100, marker=marker)
+    for _, row in group.iterrows():
+        ax.text(row["Capacity_Units"], row["Objective_Value"], f'{row["Scenario"]}', fontsize=9, ha='right')
+
+ax.set_title('Relationship Between Capacity Units and Objective Value Across Scenarios')
+ax.set_xlabel('Capacity Units')
+ax.set_ylabel('Objective Value')
+ax.legend(title='Gamma, Alpha')
+
+plt.show()
